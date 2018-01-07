@@ -28,22 +28,24 @@ int main(int argc, char const *argv[])
 	//close(sockfd);
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 	{
-		printf("ERROR connecting");
+		printf("ERROR connecting\n");
+		exit(0);
 	}
 	// initiating connect request to the server  
 	char * buffer;
 	int n; 
 	size_t m;
-	buffer = (char *)malloc(256);
+	
 	while(1)
 	{
-		// client buffer to forward request to the server
-		bzero(buffer,255);
+		buffer = (char *)malloc(256);
+		//bzero(buffer,255);
 		getline(&buffer, &m, stdin);
 		buffer[strlen(buffer)-1] = '\0';
 		n = write(sockfd, buffer, strlen(buffer));
-		bzero(buffer,255);
+		//bzero(buffer,255);
 		n = read(sockfd,buffer,255);
+		buffer[n] = '\0';
 		printf("%s\n", buffer);
 	}
 	close(sockfd);

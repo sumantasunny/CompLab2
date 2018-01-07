@@ -56,7 +56,7 @@ int main(int argc, char const *argv[])
 		n = read(newsockfd, buffer, 255);
 		//reads information from socket to local buffer 
 		printf("Here is the message: %s\n", buffer);
-		n = write(newsockfd,"I got your message",18);
+		n = write(newsockfd, buffer, strlen(buffer));
 		//writes message to the socket descriptor
 		//free(buffer);
 		close(newsockfd); 

@@ -1,4 +1,4 @@
-
+#include <unistd.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
 	//close(sockfd);
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 	{
-		error("ERROR connecting");
+		printf("ERROR connecting");
 	}
 	// initiating connect request to the server  
 	char * buffer;

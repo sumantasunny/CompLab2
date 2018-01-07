@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <netdb.h>
+#include <unistd.h>
 
 #define PORT 8080
 
@@ -27,7 +28,7 @@ int main(int argc, char const *argv[])
 	//specified. 
 	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0 )
 	{
-		error("ERROR on binding");
+		printf("ERROR on binding");
 	} 
 	//bind IP address and port number to create a socket
 

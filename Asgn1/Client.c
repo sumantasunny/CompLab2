@@ -10,6 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
+	printf("Starting server.....\n");
 	int sockfd;
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	struct hostent *server;
@@ -26,19 +27,21 @@ int main(int argc, char const *argv[])
 	bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length); /*copy server IP address*/
 	serv_addr.sin_port = htons(PORT); //defining port number
 	//close(sockfd);
+	
+	// initiating connect request to the server  
+	char * buffer;
+	int n; 
+	size_t m;
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 	{
 		printf("ERROR connecting\n");
 		exit(0);
 	}
-	// initiating connect request to the server  
-	char * buffer;
-	int n; 
-	size_t m;
-	
+	buffer = (char *)malloc(256);
 	while(1)
 	{
-		buffer = (char *)malloc(256);
+
+		
 		//bzero(buffer,255);
 		getline(&buffer, &m, stdin);
 		buffer[strlen(buffer)-1] = '\0';
@@ -49,5 +52,6 @@ int main(int argc, char const *argv[])
 		printf("%s\n", buffer);
 	}
 	close(sockfd);
+	free(buffer);
 	return 0;
 }

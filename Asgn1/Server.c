@@ -10,6 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
+	printf("Starting server.....\n");
 	struct sockaddr_in serv_addr;
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	//bzero initializes structure with zero 
@@ -32,35 +33,38 @@ int main(int argc, char const *argv[])
 	} 
 	//bind IP address and port number to create a socket
 
+	listen(sockfd,5);  
+	/* 
+	first argument specifies socket descriptor where information from client will 
+	be stored 
+	Second argument defines the maximum length to which the queue of 
+	pending connections for sockfd may grow. 
+	*/ 
+
+	struct sockaddr_in cli_addr;
+	//storing client address
+	socklen_t clilen;
+	//storing length for client address, i.e. 32 bit integer 
+	clilen = sizeof(cli_addr); 
+	int newsockfd; //socket descriptor for client, this is exclusively returned for the specific client 
+	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen); //accept returns a socket descriptor through which client and server communicate 
 	while(1)
 	{
-		listen(sockfd,5);  
-		/* 
-		first argument specifies socket descriptor where information from client will 
-		be stored 
-		Second argument defines the maximum length to which the queue of 
-		pending connections for sockfd may grow. 
-		*/ 
-  
-		struct sockaddr_in cli_addr;
-		//storing client address
-		socklen_t clilen;
-		//storing length for client address, i.e. 32 bit integer 
-		clilen = sizeof(cli_addr); 
-		int newsockfd; //socket descriptor for client, this is exclusively returned for the specific client 
-		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen); //accept returns a socket descriptor through which client and server communicate 
 		char buffer[256];
 		int n;
 		bzero(buffer,255);
 		// buffer for storing client information 
 		n = read(newsockfd, buffer, 255);
+		buffer[n] = '\0';
 		//reads information from socket to local buffer 
-		printf("Here is the message: %s\n", buffer);
-		n = write(newsockfd, buffer, strlen(buffer));
+		printf("Client's message: %s\n", buffer);
+		char reply[256];
+		sprintf(reply, "Server: I received > %s", buffer);
+		n = write(newsockfd, reply, strlen(reply));
 		//writes message to the socket descriptor
 		//free(buffer);
-		close(newsockfd); 
+		//close(newsockfd); 
 	} 
-	
+	close(newsockfd);
 	close(sockfd);
 }

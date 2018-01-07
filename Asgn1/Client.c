@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 	{
 		error("ERROR connecting");
 	}
-	// initiating connect request to the server
+	// initiating connect request to the server  
 	char * buffer;
 	int n; 
 	size_t m;

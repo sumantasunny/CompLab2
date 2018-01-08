@@ -6,11 +6,11 @@
 #include <string.h>
 #include <netdb.h>
 
-#define PORT 8080
+#define PORT 9009
 
 int main(int argc, char const *argv[])
 {
-	printf("Starting server.....\n");
+	printf("Starting client.....\n");
 	int sockfd;
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	struct hostent *server;
@@ -43,15 +43,51 @@ int main(int argc, char const *argv[])
 
 		
 		//bzero(buffer,255);
+		memset(buffer, '\0', sizeof(buffer));
 		getline(&buffer, &m, stdin);
 		buffer[strlen(buffer)-1] = '\0';
 		n = write(sockfd, buffer, strlen(buffer));
 		//bzero(buffer,255);
-		n = read(sockfd,buffer,255);
-		buffer[n] = '\0';
-		printf("%s\n", buffer);
+		if(strcmp(buffer, "close") == 0)
+		{
+			memset(buffer, '\0', sizeof(buffer));
+			n = read(sockfd,buffer,255);
+			buffer[n] = '\0';
+			printf("%s\n", buffer);
+			break;
+		}
+		else
+		{
+			memset(buffer, '\0', sizeof(buffer));
+			n = read(sockfd,buffer,255);
+			buffer[n] = '\0';
+			printf("%s\n", buffer);
+		}
 	}
 	close(sockfd);
-	free(buffer);
+	//free(buffer);
 	return 0;
+}
+
+char * readlineFromFile(int lineNo)
+{
+	FILE * fp;
+	char line[1024];
+	char * lineCopy;
+	lineCopy = (char *)calloc(1024, 1);
+	fp = fopen("data.txt", "r");
+	while(getline(line, sizeof(line), fp))
+	{
+		lineNo--;
+		if(lineNo == 0)
+		{
+			strcpy(lineCopy, line);
+			break;
+		}
+		else if(lineNo < 0)
+		{
+			break;
+		}
+	}
+	return lineCopy;
 }

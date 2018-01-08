@@ -6,7 +6,7 @@
 #include <netdb.h>
 #include <unistd.h>
 
-#define PORT 8080
+#define PORT 9009
 
 int main(int argc, char const *argv[])
 {
@@ -59,12 +59,44 @@ int main(int argc, char const *argv[])
 		//reads information from socket to local buffer 
 		printf("Client's message: %s\n", buffer);
 		char reply[256];
-		sprintf(reply, "Server: I received > %s", buffer);
-		n = write(newsockfd, reply, strlen(reply));
+		if(strcmp(buffer, "close") == 0)
+		{
+			sprintf(reply, "Server: closing connection > ");
+			n = write(newsockfd, reply, strlen(reply));
+			break;
+		}
+		else
+		{
+			sprintf(reply, "Server: I received > %s", buffer);
+			n = write(newsockfd, reply, strlen(reply));
+		}
 		//writes message to the socket descriptor
 		//free(buffer);
 		//close(newsockfd); 
 	} 
 	close(newsockfd);
 	close(sockfd);
+}
+
+char * readlineFromFile(int lineNo)
+{
+	FILE * fp;
+	char line[1024];
+	char * lineCopy;
+	lineCopy = (char *)calloc(1024, 1);
+	fp = fopen("data.txt", "r");
+	while(getline(line, sizeof(line), fp))
+	{
+		lineNo--;
+		if(lineNo == 0)
+		{
+			strcpy(lineCopy, line);
+			break;
+		}
+		else if(lineNo < 0)
+		{
+			break;
+		}
+	}
+	return lineCopy;
 }

@@ -6,11 +6,11 @@
 #include <string.h>
 #include <netdb.h>
 
-#define PORT 8080
+#define PORT 9009
 
 int main(int argc, char const *argv[])
 {
-	printf("Starting server.....\n");
+	printf("Starting client.....\n");
 	int sockfd;
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	struct hostent *server;

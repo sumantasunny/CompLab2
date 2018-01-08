@@ -68,26 +68,3 @@ int main(int argc, char const *argv[])
 	//free(buffer);
 	return 0;
 }
-
-char * readlineFromFile(int lineNo)
-{
-	FILE * fp;
-	char line[1024];
-	char * lineCopy;
-	lineCopy = (char *)calloc(1024, 1);
-	fp = fopen("data.txt", "r");
-	while(getline(line, sizeof(line), fp))
-	{
-		lineNo--;
-		if(lineNo == 0)
-		{
-			strcpy(lineCopy, line);
-			break;
-		}
-		else if(lineNo < 0)
-		{
-			break;
-		}
-	}
-	return lineCopy;
-}

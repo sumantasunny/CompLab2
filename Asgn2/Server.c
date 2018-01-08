@@ -8,6 +8,8 @@
 
 #define PORT 9009
 
+char * readlineFromFile(int lineNo);
+
 int main(int argc, char const *argv[])
 {
 	printf("Starting server.....\n");
@@ -50,28 +52,31 @@ int main(int argc, char const *argv[])
 	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen); //accept returns a socket descriptor through which client and server communicate 
 	while(1)
 	{
-		char buffer[256];
+		char message[256];
 		int n;
-		bzero(buffer,255);
+		bzero(message,255);
 		// buffer for storing client information 
-		n = read(newsockfd, buffer, 255);
-		buffer[n] = '\0';
+		n = read(newsockfd, message, 255);
+		message[n] = '\0';
 		//reads information from socket to local buffer 
-		printf("Client's message: %s\n", buffer);
+		printf("Client's message: %s\n", message);
 		char reply[256];
-		if(strcmp(buffer, "close") == 0)
+		if(strcmp(message, "close") == 0)
 		{
-			sprintf(reply, "Server: closing connection > ");
+			sprintf(reply, "Server: closing connection and exiting.....");
 			n = write(newsockfd, reply, strlen(reply));
 			break;
 		}
 		else
 		{
-			sprintf(reply, "Server: I received > %s", buffer);
+			char * lineCopy;
+			int lineNo = atoi(message);
+			lineCopy = readlineFromFile(lineNo);
+			sprintf(reply, "Server: read > %s", lineCopy);
 			n = write(newsockfd, reply, strlen(reply));
 		}
 		//writes message to the socket descriptor
-		//free(buffer);
+		//free(message);
 		//close(newsockfd); 
 	} 
 	close(newsockfd);
@@ -85,18 +90,24 @@ char * readlineFromFile(int lineNo)
 	char * lineCopy;
 	lineCopy = (char *)calloc(1024, 1);
 	fp = fopen("data.txt", "r");
-	while(getline(line, sizeof(line), fp))
+	while(fgets(line, sizeof(line), fp))
 	{
+		puts(line);
 		lineNo--;
 		if(lineNo == 0)
 		{
+			if(line[strlen(line)-1] == '\n')
+			{
+				line[strlen(line)-1] = '\0';
+			}
 			strcpy(lineCopy, line);
-			break;
+			return lineCopy;
 		}
 		else if(lineNo < 0)
 		{
 			break;
 		}
 	}
+	strcpy(lineCopy, "Line doesn't exists");
 	return lineCopy;
 }

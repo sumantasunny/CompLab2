@@ -6,9 +6,10 @@
 #include <netdb.h>
 #include <unistd.h>
 
-#define PORT 9009
+#define PORT 8080
 
-char * readlineFromFile(int lineNo);
+char * readLineFromFile(int lineNo);
+char * appendToTheFile(char * line);
 
 int main(int argc, char const *argv[])
 {
@@ -63,16 +64,63 @@ int main(int argc, char const *argv[])
 		char reply[256];
 		if(strcmp(message, "close") == 0)
 		{
-			sprintf(reply, "Server: closing connection and exiting.....");
-			n = write(newsockfd, reply, strlen(reply));
+			//sprintf(reply, "Server: closing connection and exiting.....");
+			printf("Server: closing connection and exiting.....\n");
+			//n = write(newsockfd, reply, strlen(reply));
 			break;
 		}
 		else
 		{
-			char * lineCopy;
-			int lineNo = atoi(message);
-			lineCopy = readlineFromFile(lineNo);
-			sprintf(reply, "Server: read > %s", lineCopy);
+			char * strMsg;
+			char msg[10][1024];
+			memset(msg, '\0', 10*1024);
+			int i = 0, j = 0, k = 0, f = 0;
+			for(i = 0; i < strlen(message); i++)
+			{
+				if(f == 0)
+				{
+					if(message[i] == ' ')
+					{
+						k = 0;
+						j++;
+						f = 1;
+					}
+					else
+					{
+						msg[j][k] = message[i];
+						k++;
+					}
+				}
+				else
+				{
+					msg[j][k] = message[i];
+					k++;
+				}
+			}
+			if(j == 1)
+			{
+				//printf("1\n");
+				if(strcmp(msg[0], "READX") == 0)
+				{
+					int lineNo = atoi(msg[1]);
+					strMsg = readLineFromFile(lineNo);
+					sprintf(reply, "Server: read > %s", strMsg);
+				}
+				else if (strcmp(msg[0], "WRITEX") == 0)
+				{
+					//sprintf(reply, "Server: read > %s", "Write File");
+					strMsg = appendToTheFile(msg[1]);
+					sprintf(reply, "Server: write > %s", strMsg);
+				}
+				else
+				{
+					sprintf(reply, "Server: wrong operation code");
+				}
+			}
+			else
+			{
+				sprintf(reply, "Server: wrong number of arguments");
+			}
 			n = write(newsockfd, reply, strlen(reply));
 		}
 		//writes message to the socket descriptor
@@ -83,7 +131,7 @@ int main(int argc, char const *argv[])
 	close(sockfd);
 }
 
-char * readlineFromFile(int lineNo)
+char * readLineFromFile(int lineNo)
 {
 	FILE * fp;
 	char line[1024];
@@ -92,7 +140,7 @@ char * readlineFromFile(int lineNo)
 	fp = fopen("data.txt", "r");
 	while(fgets(line, sizeof(line), fp))
 	{
-		puts(line);
+		//puts(line);
 		lineNo--;
 		if(lineNo == 0)
 		{
@@ -101,6 +149,7 @@ char * readlineFromFile(int lineNo)
 				line[strlen(line)-1] = '\0';
 			}
 			strcpy(lineCopy, line);
+			fclose(fp);
 			return lineCopy;
 		}
 		else if(lineNo < 0)
@@ -109,5 +158,18 @@ char * readlineFromFile(int lineNo)
 		}
 	}
 	strcpy(lineCopy, "Line doesn't exists");
+	fclose(fp);
 	return lineCopy;
+}
+
+char * appendToTheFile(char * line)
+{
+	FILE * fp;
+	char * message;
+	message = (char *)calloc(1024, 1);
+	fp = fopen("data.txt", "a");
+	fprintf(fp, "\n%s", line);
+	fclose(fp);
+	strcpy(message, "Success!");
+	return message;
 }

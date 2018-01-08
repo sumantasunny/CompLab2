@@ -6,7 +6,7 @@
 #include <string.h>
 #include <netdb.h>
 
-#define PORT 9009
+#define PORT 8080
 
 int main(int argc, char const *argv[])
 {
@@ -29,31 +29,32 @@ int main(int argc, char const *argv[])
 	//close(sockfd);
 	
 	// initiating connect request to the server  
-	char * buffer;
+	char buffer[256];
 	int n; 
 	size_t m;
-	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
+	int status = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
+	//printf("status :: %d\n", status);
+	if (status < 0)
 	{
 		printf("ERROR connecting\n");
 		exit(0);
 	}
-	buffer = (char *)malloc(256);
 	while(1)
 	{
-
-		
 		//bzero(buffer,255);
-		memset(buffer, '\0', sizeof(buffer));
-		getline(&buffer, &m, stdin);
+		//buffer = (char *)calloc(256, 1);
+		//memset(buffer, '\0', sizeof(buffer));
+		//getline(&buffer, &m, stdin);
+		fgets(buffer, sizeof(buffer), stdin);
 		buffer[strlen(buffer)-1] = '\0';
 		n = write(sockfd, buffer, strlen(buffer));
 		//bzero(buffer,255);
 		if(strcmp(buffer, "close") == 0)
 		{
-			memset(buffer, '\0', sizeof(buffer));
+			/*memset(buffer, '\0', sizeof(buffer));
 			n = read(sockfd,buffer,255);
 			buffer[n] = '\0';
-			printf("%s\n", buffer);
+			printf("%s\n", buffer);*/
 			break;
 		}
 		else
@@ -63,6 +64,7 @@ int main(int argc, char const *argv[])
 			buffer[n] = '\0';
 			printf("%s\n", buffer);
 		}
+		//free(buffer);
 	}
 	close(sockfd);
 	//free(buffer);

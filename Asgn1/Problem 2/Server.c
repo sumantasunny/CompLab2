@@ -26,6 +26,7 @@ char * appendToTheFile(char * line);
 int main(int argc, char const *argv[])
 {
 	createServer();
+	return 0;
 }
 
 void createServer()

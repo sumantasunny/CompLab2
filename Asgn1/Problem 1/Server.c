@@ -24,6 +24,7 @@ void createServer();
 int main(int argc, char const *argv[])
 {
 	createServer();
+	return 0;
 }
 
 void createServer()
@@ -73,6 +74,7 @@ void createServer()
 		}
 		else
 		{
+			sprintf(reply, "%s", "got your message");
 			n = write(newsockfd, reply, strlen(reply));
 			printf("Server : %s\n", reply);
 		}

@@ -24,6 +24,7 @@ void startClient();
 int main(int argc, char const *argv[])
 {
 	startClient();
+	return 0;
 }
 
 void startClient()
@@ -72,5 +73,4 @@ void startClient()
 		}
 	}
 	close(sockfd); //Close the SOCKET
-	return 0;
 }

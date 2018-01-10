@@ -23,12 +23,14 @@ void createServer();
 char * readLineFromFile(int lineNo);
 char * appendToTheFile(char * line);
 
+//The main function
 int main(int argc, char const *argv[])
 {
 	createServer();
 	return 0;
 }
 
+//Creates the server and handles the client requests
 void createServer()
 {
 	int sockfd;  //used for storing socket descriptor, this only listens to any of the client’s connect request
@@ -136,6 +138,7 @@ void createServer()
 	close(sockfd);  //Close the Server socket
 }
 
+//Read lines from the data file
 char * readLineFromFile(int lineNo)
 {
 	FILE * fp;
@@ -178,6 +181,7 @@ char * readLineFromFile(int lineNo)
 	return lineCopy;
 }
 
+//Write to the data file
 char * appendToTheFile(char * line)
 {
 	FILE * fp;

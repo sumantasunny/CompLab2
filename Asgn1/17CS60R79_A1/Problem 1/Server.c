@@ -21,12 +21,14 @@
 
 void createServer();
 
+//The main function
 int main(int argc, char const *argv[])
 {
 	createServer();
 	return 0;
 }
 
+//Creates the server and handles the client requests
 void createServer()
 {
 	int sockfd;  //used for storing socket descriptor, this only listens to any of the client’s connect request

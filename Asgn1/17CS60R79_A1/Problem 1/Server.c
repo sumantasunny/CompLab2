@@ -50,18 +50,19 @@ void createServer()
 	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0 )
 	{
 		printf("ERROR on binding");
+		exit(1);
 	}
 
 	/*first argument specifies socket descriptor where information from
 	  client will be stored. Second argument defines the maximum length
 	  to which the queue of pending connections for sockfd may grow.*/
-	listen(sockfd,5);
+	listen(sockfd,1);
 
 	struct sockaddr_in cli_addr; //storing client address
-	socklen_t client; //storing length for client address, i.e. 32 bit integer 
+	socklen_t client_size; //storing length for client address, i.e. 32 bit integer 
 	int newsockfd; //socket descriptor for client, this is exclusively returned for the specific client
-	client = sizeof(cli_addr); 
-	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &client); //accept returns a socket descriptor through which client and server communicate
+	client_size = sizeof(cli_addr); 
+	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &client_size); //accept returns a socket descriptor through which client and server communicate
 	while(1)
 	{
 		bzero(message,255); 		//buffer for storing client message

@@ -21,12 +21,14 @@
 
 void startClient();
 
+//The main function
 int main(int argc, char const *argv[])
 {
 	startClient();
 	return 0;
 }
 
+//Creates the client and send the request to the server
 void startClient()
 {
 	char buffer[256];

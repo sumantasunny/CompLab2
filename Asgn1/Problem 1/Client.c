@@ -38,19 +38,19 @@ void startClient()
 	struct hostent *server;
 	struct sockaddr_in serv_addr;
 	printf("Starting client.....\n");
-	sockfd = socket(AF_INET, SOCK_STREAM, 0); //Creating the SOCKET
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); //Creating the SOCKET(domain, type, protocol)
 	//START :: To collect the server details
 	server = gethostbyname("localhost"); //resolves the localhost
 	bzero((char *) &serv_addr, sizeof(serv_addr)); //initialize the server address
 	serv_addr.sin_family = AF_INET; //for IPv4 family
-	bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length); //copy the server(localhost) IP address
+	bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length); //copy(byte) the server(localhost) IP address
 	serv_addr.sin_port = htons(PORT); //defining port number
 	//END :: To collect the server details
 	int status = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)); //initiating connect request to the server
 	if (status < 0)
 	{
 		printf("ERROR connecting\n");
-		exit(0);
+		exit(1);
 	}
 	while(1)
 	{
